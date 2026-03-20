@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>Phonics: Short E vs Long E</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{font-family:'Nunito','Noto Sans TC',sans-serif;background:#f0f4f8;min-height:100vh;color:#1e293b}
+
+/* ── HOME ───────────────────────────────── */
+#home{padding:clamp(24px,5vw,56px) clamp(16px,5vw,48px);max-width:960px;margin:0 auto}
+.home-title{font-size:clamp(2rem,6vw,4rem);font-weight:900;text-align:center;color:#1e293b;line-height:1.1;margin-bottom:.4em}
+.home-sub{text-align:center;font-size:clamp(1rem,2.5vw,1.5rem);color:#64748b;margin-bottom:clamp(28px,5vw,56px);font-weight:700}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(16px,3vw,28px)}
+.topic-card{background:#fff;border-radius:24px;padding:clamp(28px,5vw,44px) clamp(20px,4vw,36px);
+  box-shadow:0 4px 24px rgba(0,0,0,.07);cursor:pointer;transition:transform .18s,box-shadow .18s;
+  display:flex;flex-direction:column;align-items:center;gap:12px;border:3px solid transparent}
+.topic-card:hover{transform:translateY(-6px);box-shadow:0 12px 36px rgba(0,0,0,.13)}
+.topic-card.o{border-color:#fed7aa}.topic-card.v{border-color:#ddd6fe}
+.card-emoji{font-size:clamp(3.5rem,10vw,6rem);line-height:1}
+.card-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;color:#1e293b}
+.card-ipa{font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:700}
+.card-ipa.o{color:#f97316}.card-ipa.v{color:#8b5cf6}
+.card-hint{font-size:clamp(.85rem,2vw,1.1rem);color:#64748b;font-weight:700;text-align:center}
+.start-btn{margin-top:8px;padding:12px 28px;border:none;border-radius:99px;font-size:clamp(.95rem,2vw,1.2rem);
+  font-weight:900;font-family:inherit;cursor:pointer;transition:opacity .15s}
+.start-btn.o{background:#f97316;color:#fff}.start-btn.v{background:#8b5cf6;color:#fff}
+.start-btn:hover{opacity:.88}
+
+/* ── LESSON ─────────────────────────────── */
+#lesson{display:none;min-height:100vh;flex-direction:column}
+.lesson-bg-o{background:linear-gradient(160deg,#fff7ed,#ffedd5 60%,#fef3c7)}
+.lesson-bg-v{background:linear-gradient(160deg,#f5f3ff,#ede9fe 60%,#e0e7ff)}
+
+/* topbar */
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;background:rgba(255,255,255,.88);backdrop-filter:blur(10px);
+  border-bottom:2px solid rgba(0,0,0,.06);gap:12px}
+.back-btn{background:none;border:2px solid #cbd5e1;border-radius:12px;padding:8px 14px;
+  font-size:clamp(.85rem,2vw,1rem);font-weight:900;font-family:inherit;cursor:pointer;
+  color:#475569;transition:background .15s}
+.back-btn:hover{background:#f1f5f9}
+.progress-dots{display:flex;gap:8px;align-items:center}
+.dot{width:12px;height:12px;border-radius:50%;background:#e2e8f0;transition:background .3s,transform .3s}
+.dot.o.active{background:#f97316;transform:scale(1.3)}
+.dot.v.active{background:#8b5cf6;transform:scale(1.3)}
+.step-label{font-size:clamp(.8rem,1.8vw,1rem);font-weight:900;color:#64748b}
+
+/* header banner */
+.lesson-header{padding:clamp(20px,4vw,36px) clamp(16px,4vw,32px);
+  display:flex;flex-direction:column;align-items:center;gap:8px}
+.header-emoji{font-size:clamp(3rem,8vw,5rem)}
+.header-title{font-size:clamp(1.8rem,5vw,3.2rem);font-weight:900;color:#1e293b}
+.header-ipa{font-size:clamp(1.2rem,3vw,2rem);font-weight:900}
+.header-ipa.o{color:#f97316}.header-ipa.v{color:#8b5cf6}
+
+/* content */
+.content-wrap{flex:1;padding:clamp(12px,3vw,24px) clamp(12px,3vw,32px) 120px;
+  display:flex;flex-direction:column;align-items:center}
+.content-card{background:#fff;border-radius:24px;padding:clamp(20px,4vw,36px);
+  box-shadow:0 4px 24px rgba(0,0,0,.08);width:100%;max-width:820px}
+
+/* botbar */
+.botbar{position:fixed;bottom:0;left:0;right:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 20px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
+  border-top:2px solid rgba(0,0,0,.06);gap:12px}
+.nav-btn{border:none;border-radius:14px;padding:12px 24px;font-size:clamp(.9rem,2vw,1.1rem);
+  font-weight:900;font-family:inherit;cursor:pointer;transition:opacity .15s;min-width:88px}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+.nav-btn.o{background:#f97316;color:#fff}.nav-btn.v{background:#8b5cf6;color:#fff}
+.page-tabs{display:flex;gap:6px}
+.ptab{padding:7px 14px;border-radius:10px;border:2px solid #e2e8f0;
+  font-size:clamp(.78rem,1.8vw,.95rem);font-weight:900;font-family:inherit;cursor:pointer;
+  background:#fff;color:#64748b;transition:all .15s}
+.ptab.o.active{background:#fff7ed;color:#f97316;border-color:#fed7aa}
+.ptab.v.active{background:#f5f3ff;color:#8b5cf6;border-color:#ddd6fe}
+
+/* ── RULE PAGE ──────────────────────────── */
+.ipa-badge{display:inline-flex;align-items:center;justify-content:center;
+  border-radius:20px;padding:10px 28px;font-size:clamp(2rem,6vw,3.5rem);font-weight:900;
+  margin-bottom:16px}
+.ipa-badge.o{background:#fff7ed;color:#f97316;border:3px solid #fed7aa}
+.ipa-badge.v{background:#f5f3ff;color:#8b5cf6;border:3px solid #ddd6fe}
+.rule-text{font-size:clamp(1.2rem,3vw,1.9rem);font-weight:900;line-height:1.5;
+  color:#1e293b;margin-bottom:16px}
+.rule-hint{border-radius:14px;padding:12px 18px;font-size:clamp(.95rem,2.2vw,1.3rem);
+  font-weight:700;margin-bottom:20px}
+.rule-hint.o{background:#fff7ed;color:#c2410c;border-left:4px solid #f97316}
+.rule-hint.v{background:#f5f3ff;color:#5b21b6;border-left:4px solid #8b5cf6}
+.speak-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.spk-btn{display:flex;align-items:center;gap:8px;border:none;border-radius:12px;
+  padding:11px 20px;font-size:clamp(.9rem,2vw,1.1rem);font-weight:900;font-family:inherit;
+  cursor:pointer;transition:opacity .15s}
+.spk-btn.o{background:#fff7ed;color:#f97316;border:2px solid #fed7aa}
+.spk-btn.v{background:#f5f3ff;color:#8b5cf6;border:2px solid #ddd6fe}
+.spk-btn:hover{opacity:.8}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.detail-card{border-radius:14px;padding:14px 16px}
+.detail-card.o{background:#fff7ed;border:2px solid #fed7aa}
+.detail-card.v{background:#f5f3ff;border:2px solid #ddd6fe}
+.detail-label{font-size:.8rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.detail-label.o{color:#f97316}.detail-label.v{color:#8b5cf6}
+.detail-val{font-size:clamp(.9rem,2vw,1.1rem);font-weight:700;color:#1e293b}
+
+/* ── WORD CARDS ─────────────────────────── */
+.word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.word-card{border-radius:18px;padding:20px 14px;display:flex;flex-direction:column;
+  align-items:center;gap:8px;cursor:pointer;border:3px solid transparent;
+  background:#f8fafc;transition:transform .15s,box-shadow .15s,border-color .15s}
+.word-card.o:hover{border-color:#fed7aa;box-shadow:0 6px 20px rgba(249,115,22,.15)}
+.word-card.v:hover{border-color:#ddd6fe;box-shadow:0 6px 20px rgba(139,92,246,.15)}
+.wc-emoji{font-size:clamp(2.4rem,6vw,3.5rem)}
+.wc-word{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;color:#1e293b}
+.wc-ipa{font-size:clamp(.85rem,2vw,1.1rem);font-weight:700}
+.wc-ipa.o{color:#f97316}.wc-ipa.v{color:#8b5cf6}
+.wc-zh{font-size:clamp(.85rem,2vw,1rem);font-weight:700;color:#64748b}
+.wc-icon{font-size:1.3rem;opacity:.7}
+
+/* ── SENTENCES ──────────────────────────── */
+.sent-list{display:flex;flex-direction:column;gap:20px}
+.sent-card{border-radius:18px;padding:18px 20px}
+.sent-card.o{background:#fff7ed;border:2px solid #fed7aa}
+.sent-card.v{background:#f5f3ff;border:2px solid #ddd6fe}
+.sent-tag{font-size:.75rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em;
+  margin-bottom:8px}
+.sent-tag.o{color:#f97316}.sent-tag.v{color:#8b5cf6}
+.sent-text{font-size:clamp(1.2rem,3vw,1.9rem);font-weight:900;color:#1e293b;
+  line-height:1.5;margin-bottom:10px}
+.sent-zh{font-size:clamp(.9rem,2vw,1.2rem);font-weight:700;color:#475569;margin-bottom:14px}
+.sent-btns{display:flex;gap:8px;flex-wrap:wrap}
+.sent-spk{display:flex;align-items:center;gap:7px;border:none;border-radius:10px;
+  padding:9px 18px;font-size:clamp(.85rem,1.9vw,1.05rem);font-weight:900;font-family:inherit;
+  cursor:pointer;transition:opacity .15s}
+.sent-spk.o{background:#fff;color:#f97316;border:2px solid #fed7aa}
+.sent-spk.v{background:#fff;color:#8b5cf6;border:2px solid #ddd6fe}
+.sent-spk:hover{opacity:.78}
+
+/* ── HIGHLIGHT CLASSES ──────────────────── */
+.hi-o{color:#ea580c;font-weight:900;text-decoration:underline;text-decoration-color:#fdba74;text-underline-offset:4px}
+.hi-v{color:#7c3aed;font-weight:900;text-decoration:underline;text-decoration-color:#c4b5fd;text-underline-offset:4px}
+
+/* ── PULSE ANIMATIONS ───────────────────── */
+@keyframes pulseO{0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,.5)}50%{box-shadow:0 0 0 12px rgba(249,115,22,0)}}
+@keyframes pulseV{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,.5)}50%{box-shadow:0 0 0 12px rgba(139,92,246,0)}}
+.pulse-o{animation:pulseO .85s ease-in-out infinite}
+.pulse-v{animation:pulseV .85s ease-in-out infinite}
+
+/* ── MISC ───────────────────────────────── */
+.section-title{font-size:clamp(1rem,2.4vw,1.4rem);font-weight:900;color:#94a3b8;
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ HOME ══════════════════ -->
+<div id="home">
+  <h1 class="home-title">🔤 Phonics Practice</h1>
+  <p class="home-sub">選擇一個主題開始學習 — 點擊卡片進入課程</p>
+  <div class="card-grid" id="cardGrid"></div>
+</div>
+
+<!-- ══════════════════ LESSON ══════════════════ -->
+<div id="lesson">
+  <div class="topbar">
+    <button class="back-btn" id="backBtn">← 返回首頁</button>
+    <div class="progress-dots" id="progressDots"></div>
+    <span class="step-label" id="stepLabel"></span>
+  </div>
+
+  <div class="lesson-header" id="lessonHeader">
+    <div class="header-emoji" id="headerEmoji"></div>
+    <div class="header-title" id="headerTitle"></div>
+    <div class="header-ipa" id="headerIpa"></div>
+  </div>
+
+  <div class="content-wrap">
+    <div class="content-card" id="contentCard"></div>
+  </div>
+
+  <div class="botbar">
+    <button class="nav-btn" id="prevBtn">← 上一頁</button>
+    <div class="page-tabs" id="pageTabs"></div>
+    <button class="nav-btn" id="nextBtn">下一頁 →</button>
+  </div>
+</div>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+var DATA = {
+  short_e: {
+    id: 'short_e',
+    emoji: '🛏️',
+    title: 'Short E',
+    ipa: '/ɛ/',
+    accent: '#f97316',
+    theme: 'o',
+    pulse: 'pulse-o',
+    hi: 'hi-o',
+    lbg: '#fff7ed',
+    rule: '短母音 e 發「ㄝ」的短促音！嘴巴微微張開，嘴角輕輕往兩側拉，舌頭放在口腔中間，快速說「ㄝ」就對了。',
+    ruleHint: '💡 看到子音＋e＋子音（CVC）的結構，通常就是短母音 /ɛ/。',
+    ruleSpeak: 'Short e says eh! Like in bed, red, and pen. Open your mouth slightly and say eh quickly.',
+    details: [
+      { label: '嘴型', val: '微微張開，嘴角輕往兩側拉' },
+      { label: '舌頭', val: '放在口腔中間，不高不低' },
+      { label: '時間', val: '短促有力，快速發音' },
+      { label: '常見型', val: 'CVC 結構，如 bed、red、pen' }
+    ],
+    words: [
+      { w: 'bed', p: '/bɛd/', zh: '床',   e: '🛏️' },
+      { w: 'red', p: '/rɛd/', zh: '紅色', e: '🔴' },
+      { w: 'pen', p: '/pɛn/', zh: '筆',   e: '✏️' },
+      { w: 'web', p: '/wɛb/', zh: '網',   e: '🕸️' },
+      { w: 'leg', p: '/lɛɡ/', zh: '腿',   e: '🦵' },
+      { w: 'hen', p: '/hɛn/', zh: '母雞', e: '🐔' }
+    ],
+    sents: [
+      { id: 'se1', pair: 'bed vs bead', sent: 'The red hen sat on the bed.', zh: '那隻紅色的母雞坐在床上。', targets: ['red','hen','bed'] },
+      { id: 'se2', pair: 'pet vs Pete', sent: 'Ben has a wet pet on his leg.', zh: '班的腿上有一隻濕濕的寵物。', targets: ['Ben','wet','pet','leg'] },
+      { id: 'se3', pair: 'pen vs peen', sent: 'She left the red pen on the desk.', zh: '她把那支紅筆放在桌上。', targets: ['red','pen','desk'] }
+    ]
+  },
+
+  long_e: {
+    id: 'long_e',
+    emoji: '🎬',
+    title: 'Long E (e_e)',
+    ipa: '/iː/',
+    accent: '#8b5cf6',
+    theme: 'v',
+    pulse: 'pulse-v',
+    hi: 'hi-v',
+    lbg: '#f5f3ff',
+    rule: '長母音 e 發字母本身的音「ㄧ」！當單字出現「e＿e」的魔法結構時，前面的 e 要大聲說出自己的名字 /iː/，結尾的 e 保持安靜不發音。',
+    ruleHint: '💡 e＿e 結構：e + 子音 + 魔法 e，前面的 e 發長音，最後的 e 不發音。',
+    ruleSpeak: 'Long e says ee! The magic e at the end makes the first e say its name. Like in theme, these, and scene.',
+    details: [
+      { label: '嘴型', val: '嘴角往兩側拉開，像在微笑' },
+      { label: '舌頭', val: '舌頭往前且往上，接近上顎' },
+      { label: '時間', val: '比短母音拉長，可持續發音' },
+      { label: '常見型', val: 'e＿e 魔法結構，如 theme、scene' }
+    ],
+    words: [
+      { w: 'Pete',  p: '/piːt/',  zh: '皮特（人名）', e: '🧑' },
+      { w: 'theme', p: '/θiːm/',  zh: '主題',         e: '🎨' },
+      { w: 'these', p: '/ðiːz/',  zh: '這些',         e: '👆' },
+      { w: 'eve',   p: '/iːv/',   zh: '前夕',         e: '🌙' },
+      { w: 'gene',  p: '/dʒiːn/', zh: '基因',         e: '🧬' },
+      { w: 'scene', p: '/siːn/',  zh: '場景',         e: '🎬' }
+    ],
+    sents: [
+      { id: 'le1', pair: 'pet vs Pete', sent: 'Pete chose the theme for the show.', zh: '皮特為表演選了這個主題。', targets: ['Pete','theme'] },
+      { id: 'le2', pair: 'set vs scene', sent: 'These are the best scenes to see.', zh: '這些是最值得觀看的場景。', targets: ['These','scenes','see'] },
+      { id: 'le3', pair: 'gen vs gene', sent: 'Gene and Eve felt complete after the trip.', zh: '旅行結束後，吉恩和伊芙感到心滿意足。', targets: ['Gene','Eve','complete'] }
+    ]
+  }
+};
+
+var ORDER = ['short_e','long_e'];
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+var currentId = null;
+var currentStep = 0;
+var speakingId = null;
+var voiceList = [];
+var synth = window.speechSynthesis;
+
+// ── UTILS ────────────────────────────────────────────────────────────────────
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function svgV(speaking){
+  if(speaking) return '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="6" width="4" height="12" rx="2"/><rect x="10" y="3" width="4" height="18" rx="2"/><rect x="17" y="7" width="4" height="10" rx="2"/></svg>';
+  return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+}
+
+// ── TTS ──────────────────────────────────────────────────────────────────────
+function pickVoice(lang){
+  var list = synth.getVoices();
+  if(list.length === 0) list = voiceList;
+  var preferred = ['Google','Microsoft','Premium','Natural','Samantha'];
+  for(var p=0;p<preferred.length;p++){
+    for(var i=0;i<list.length;i++){
+      if(list[i].lang===lang && list[i].name.indexOf(preferred[p])>=0) return list[i];
+    }
+  }
+  for(var i=0;i<list.length;i++){ if(list[i].lang===lang) return list[i]; }
+  var pre=lang.slice(0,2);
+  for(var i=0;i<list.length;i++){ if(list[i].lang.slice(0,2)===pre) return list[i]; }
+  return null;
+}
+
+function updateSpeakUI(id){
+  speakingId = id;
+  document.querySelectorAll('[data-spk]').forEach(function(el){
+    var spk = el.getAttribute('data-spk');
+    var isActive = (spk === id);
+    var d = currentId ? DATA[currentId] : null;
+    if(d){
+      if(isActive){ el.classList.add(d.pulse); }
+      else { el.classList.remove(d.pulse); }
+    }
+    if(el.tagName === 'BUTTON'){
+      // 按鈕：整個 innerHTML 更新（文字 + icon）
+      el.innerHTML = svgV(isActive) + ' ' + el.getAttribute('data-label');
+    } else {
+      // 單字卡 div：只更新卡片內的 .wc-icon，不動其他內容
+      var iconDiv = el.querySelector('.wc-icon');
+      if(iconDiv) iconDiv.innerHTML = svgV(isActive);
+    }
+  });
+}
+
+function doSpeak(text, id, lang){
+  if(!lang) lang = 'en-US';
+  if(speakingId === id){ synth.cancel(); updateSpeakUI(null); return; }
+  synth.cancel();
+  updateSpeakUI(id);
+  function _speak(){
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = lang;
+    u.rate = (lang==='zh-TW') ? 0.85 : 0.82;
+    u.pitch = 1.0;
+    var voice = pickVoice(lang);
+    if(voice){ u.voice = voice; u.lang = voice.lang; }
+    u.onend   = function(){ updateSpeakUI(null); };
+    u.onerror = function(){ updateSpeakUI(null); };
+    synth.speak(u);
+  }
+  var list = synth.getVoices();
+  if(list.length > 0){ _speak(); }
+  else {
+    synth.onvoiceschanged = function(){
+      synth.onvoiceschanged = null;
+      voiceList = synth.getVoices();
+      _speak();
+    };
+    setTimeout(function(){
+      if(speakingId===id){ voiceList=synth.getVoices(); _speak(); }
+    }, 500);
+  }
+}
+
+function attachListeners(){
+  document.querySelectorAll('[data-spk]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      doSpeak(btn.getAttribute('data-txt'), btn.getAttribute('data-spk'), btn.getAttribute('data-lang'));
+    });
+  });
+}
+
+// ── HIGHLIGHT ────────────────────────────────────────────────────────────────
+function highlightSent(sent, targets, hiClass){
+  var words = sent.split(/(\s+)/);
+  return words.map(function(tok){
+    var clean = tok.replace(/[^a-zA-Z]/g,'').toLowerCase();
+    var isTarget = targets.map(function(t){ return t.toLowerCase(); }).indexOf(clean) >= 0;
+    if(isTarget) return '<span class="' + hiClass + '">' + esc(tok) + '</span>';
+    return esc(tok);
+  }).join('');
+}
+
+// ── BUILDERS ─────────────────────────────────────────────────────────────────
+function buildRule(d){
+  var html = '';
+  html += '<div style="text-align:center;margin-bottom:20px">';
+  html += '<span class="ipa-badge ' + d.theme + '">' + esc(d.ipa) + '</span>';
+  html += '</div>';
+  html += '<p class="rule-text">' + esc(d.rule) + '</p>';
+  html += '<div class="rule-hint ' + d.theme + '">' + esc(d.ruleHint) + '</div>';
+  html += '<div class="speak-row">';
+  html += '<button class="spk-btn ' + d.theme + '" data-spk="rule-zh" data-txt="' + esc(d.rule) + '" data-lang="zh-TW" data-label="🇹🇼 聽中文說明">' + svgV(false) + ' 🇹🇼 聽中文說明</button>';
+  html += '<button class="spk-btn ' + d.theme + '" data-spk="rule-en" data-txt="' + esc(d.ruleSpeak) + '" data-lang="en-US" data-label="🇺🇸 聽英文示範">' + svgV(false) + ' 🇺🇸 聽英文示範</button>';
+  html += '</div>';
+  html += '<div class="detail-grid">';
+  d.details.forEach(function(item){
+    html += '<div class="detail-card ' + d.theme + '">';
+    html += '<div class="detail-label ' + d.theme + '">' + esc(item.label) + '</div>';
+    html += '<div class="detail-val">' + esc(item.val) + '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function buildWords(d){
+  var html = '<p class="section-title">精選單字 — 點擊卡片朗讀</p>';
+  html += '<div class="word-grid">';
+  d.words.forEach(function(w){
+    var spkId = 'word-' + w.w;
+    html += '<div class="word-card ' + d.theme + '" data-spk="' + esc(spkId) + '" data-txt="' + esc(w.w) + '" data-lang="en-US" data-label="' + esc(w.w) + '">';
+    html += '<div class="wc-emoji">' + w.e + '</div>';
+    html += '<div class="wc-word">' + esc(w.w) + '</div>';
+    html += '<div class="wc-ipa ' + d.theme + '">' + esc(w.p) + '</div>';
+    html += '<div class="wc-zh">' + esc(w.zh) + '</div>';
+    html += '<div class="wc-icon">' + svgV(false) + '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function buildSents(d){
+  var html = '<p class="section-title">例句練習 — 聆聽並認出高亮單字</p>';
+  html += '<div class="sent-list">';
+  d.sents.forEach(function(s){
+    html += '<div class="sent-card ' + d.theme + '">';
+    html += '<div class="sent-tag ' + d.theme + '">🔀 ' + esc(s.pair) + '</div>';
+    html += '<div class="sent-text">' + highlightSent(s.sent, s.targets, d.hi) + '</div>';
+    html += '<div class="sent-zh">' + esc(s.zh) + '</div>';
+    html += '<div class="sent-btns">';
+    html += '<button class="sent-spk ' + d.theme + '" data-spk="' + esc(s.id) + '-en" data-txt="' + esc(s.sent) + '" data-lang="en-US" data-label="🇺🇸 英文">' + svgV(false) + ' 🇺🇸 英文</button>';
+    html += '<button class="sent-spk ' + d.theme + '" data-spk="' + esc(s.id) + '-zh" data-txt="' + esc(s.zh) + '" data-lang="zh-TW" data-label="🇹🇼 中文">' + svgV(false) + ' 🇹🇼 中文</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+var STEP_NAMES = ['發音規則','精選單字','例句練習'];
+
+function renderLesson(){
+  var d = DATA[currentId];
+
+  // background
+  var lesson = document.getElementById('lesson');
+  lesson.className = '';
+  lesson.style.display = 'flex';
+  lesson.style.cssText = 'display:flex;min-height:100vh;flex-direction:column';
+  lesson.classList.add('lesson-bg-' + d.theme);
+
+  // header
+  document.getElementById('headerEmoji').textContent = d.emoji;
+  document.getElementById('headerTitle').textContent = d.title;
+  var ipa = document.getElementById('headerIpa');
+  ipa.textContent = d.ipa;
+  ipa.className = 'header-ipa ' + d.theme;
+
+  // progress dots
+  var dots = document.getElementById('progressDots');
+  dots.innerHTML = '';
+  for(var i=0;i<3;i++){
+    var dot = document.createElement('div');
+    dot.className = 'dot ' + d.theme + (i===currentStep ? ' active' : '');
+    dots.appendChild(dot);
+  }
+
+  // step label
+  document.getElementById('stepLabel').textContent = STEP_NAMES[currentStep];
+
+  // page tabs
+  var tabs = document.getElementById('pageTabs');
+  tabs.innerHTML = '';
+  STEP_NAMES.forEach(function(name, i){
+    var btn = document.createElement('button');
+    btn.className = 'ptab ' + d.theme + (i===currentStep ? ' active' : '');
+    btn.textContent = name;
+    btn.setAttribute('data-step', i);
+    tabs.appendChild(btn);
+    btn.addEventListener('click', function(){
+      synth.cancel(); updateSpeakUI(null);
+      currentStep = parseInt(btn.getAttribute('data-step'));
+      renderLesson();
+    });
+  });
+
+  // nav buttons
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  prevBtn.className = 'nav-btn ' + d.theme;
+  nextBtn.className = 'nav-btn ' + d.theme;
+  prevBtn.disabled = (currentStep === 0);
+  nextBtn.disabled = (currentStep === 2);
+  nextBtn.textContent = '下一頁 →';
+
+  // content
+  var card = document.getElementById('contentCard');
+  if(currentStep === 0) card.innerHTML = buildRule(d);
+  else if(currentStep === 1) card.innerHTML = buildWords(d);
+  else card.innerHTML = buildSents(d);
+
+  attachListeners();
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────────────────────
+function startLesson(id){
+  currentId = id;
+  currentStep = 0;
+  document.getElementById('home').style.display = 'none';
+  synth.cancel(); updateSpeakUI(null);
+  renderLesson();
+}
+
+function goHome(){
+  synth.cancel(); updateSpeakUI(null);
+  document.getElementById('lesson').style.display = 'none';
+  document.getElementById('home').style.display = 'block';
+  currentId = null;
+}
+
+document.getElementById('backBtn').addEventListener('click', goHome);
+
+document.getElementById('prevBtn').addEventListener('click', function(){
+  if(currentStep > 0){
+    synth.cancel(); updateSpeakUI(null);
+    currentStep--;
+    renderLesson();
+  }
+});
+
+document.getElementById('nextBtn').addEventListener('click', function(){
+  if(currentStep < 2){
+    synth.cancel(); updateSpeakUI(null);
+    currentStep++;
+    renderLesson();
+  }
+});
+
+// ── BUILD HOME ───────────────────────────────────────────────────────────────
+function buildHome(){
+  var grid = document.getElementById('cardGrid');
+  grid.innerHTML = '';
+  ORDER.forEach(function(id){
+    var d = DATA[id];
+    var card = document.createElement('div');
+    card.className = 'topic-card ' + d.theme;
+    card.innerHTML = [
+      '<div class="card-emoji">' + d.emoji + '</div>',
+      '<div class="card-title">' + esc(d.title) + '</div>',
+      '<div class="card-ipa ' + d.theme + '">' + esc(d.ipa) + '</div>',
+      '<div class="card-hint">' + esc(d.words.slice(0,4).map(function(w){return w.w}).join(' · ')) + ' …</div>',
+      '<button class="start-btn ' + d.theme + '">開始學習 →</button>'
+    ].join('');
+    card.querySelector('.start-btn').addEventListener('click', function(e){
+      e.stopPropagation();
+      startLesson(id);
+    });
+    card.addEventListener('click', function(){ startLesson(id); });
+    grid.appendChild(card);
+  });
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+buildHome();
+if(synth.onvoiceschanged !== undefined){
+  synth.onvoiceschanged = function(){
+    voiceList = synth.getVoices();
+  };
+}
+</script>
+</body>
+</html>

@@ -1,559 +1,333 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer">
-<title>Phonics: Short E vs Long E</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:16px}
-body{font-family:'Nunito','Noto Sans TC',sans-serif;background:#f0f4f8;min-height:100vh;color:#1e293b}
-
-/* ── HOME ───────────────────────────────── */
-#home{padding:clamp(24px,5vw,56px) clamp(16px,5vw,48px);max-width:960px;margin:0 auto}
-.home-title{font-size:clamp(2rem,6vw,4rem);font-weight:900;text-align:center;color:#1e293b;line-height:1.1;margin-bottom:.4em}
-.home-sub{text-align:center;font-size:clamp(1rem,2.5vw,1.5rem);color:#64748b;margin-bottom:clamp(28px,5vw,56px);font-weight:700}
-.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(16px,3vw,28px)}
-.topic-card{background:#fff;border-radius:24px;padding:clamp(28px,5vw,44px) clamp(20px,4vw,36px);
-  box-shadow:0 4px 24px rgba(0,0,0,.07);cursor:pointer;transition:transform .18s,box-shadow .18s;
-  display:flex;flex-direction:column;align-items:center;gap:12px;border:3px solid transparent}
-.topic-card:hover{transform:translateY(-6px);box-shadow:0 12px 36px rgba(0,0,0,.13)}
-.topic-card.o{border-color:#fed7aa}.topic-card.v{border-color:#ddd6fe}
-.card-emoji{font-size:clamp(3.5rem,10vw,6rem);line-height:1}
-.card-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;color:#1e293b}
-.card-ipa{font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:700}
-.card-ipa.o{color:#f97316}.card-ipa.v{color:#8b5cf6}
-.card-hint{font-size:clamp(.85rem,2vw,1.1rem);color:#64748b;font-weight:700;text-align:center}
-.start-btn{margin-top:8px;padding:12px 28px;border:none;border-radius:99px;font-size:clamp(.95rem,2vw,1.2rem);
-  font-weight:900;font-family:inherit;cursor:pointer;transition:opacity .15s}
-.start-btn.o{background:#f97316;color:#fff}.start-btn.v{background:#8b5cf6;color:#fff}
-.start-btn:hover{opacity:.88}
-
-/* ── LESSON ─────────────────────────────── */
-#lesson{display:none;min-height:100vh;flex-direction:column}
-.lesson-bg-o{background:linear-gradient(160deg,#fff7ed,#ffedd5 60%,#fef3c7)}
-.lesson-bg-v{background:linear-gradient(160deg,#f5f3ff,#ede9fe 60%,#e0e7ff)}
-
-/* topbar */
-.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
-  padding:10px 16px;background:rgba(255,255,255,.88);backdrop-filter:blur(10px);
-  border-bottom:2px solid rgba(0,0,0,.06);gap:12px}
-.back-btn{background:none;border:2px solid #cbd5e1;border-radius:12px;padding:8px 14px;
-  font-size:clamp(.85rem,2vw,1rem);font-weight:900;font-family:inherit;cursor:pointer;
-  color:#475569;transition:background .15s}
-.back-btn:hover{background:#f1f5f9}
-.progress-dots{display:flex;gap:8px;align-items:center}
-.dot{width:12px;height:12px;border-radius:50%;background:#e2e8f0;transition:background .3s,transform .3s}
-.dot.o.active{background:#f97316;transform:scale(1.3)}
-.dot.v.active{background:#8b5cf6;transform:scale(1.3)}
-.step-label{font-size:clamp(.8rem,1.8vw,1rem);font-weight:900;color:#64748b}
-
-/* header banner */
-.lesson-header{padding:clamp(20px,4vw,36px) clamp(16px,4vw,32px);
-  display:flex;flex-direction:column;align-items:center;gap:8px}
-.header-emoji{font-size:clamp(3rem,8vw,5rem)}
-.header-title{font-size:clamp(1.8rem,5vw,3.2rem);font-weight:900;color:#1e293b}
-.header-ipa{font-size:clamp(1.2rem,3vw,2rem);font-weight:900}
-.header-ipa.o{color:#f97316}.header-ipa.v{color:#8b5cf6}
-
-/* content */
-.content-wrap{flex:1;padding:clamp(12px,3vw,24px) clamp(12px,3vw,32px) 120px;
-  display:flex;flex-direction:column;align-items:center}
-.content-card{background:#fff;border-radius:24px;padding:clamp(20px,4vw,36px);
-  box-shadow:0 4px 24px rgba(0,0,0,.08);width:100%;max-width:820px}
-
-/* botbar */
-.botbar{position:fixed;bottom:0;left:0;right:0;z-index:50;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 20px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
-  border-top:2px solid rgba(0,0,0,.06);gap:12px}
-.nav-btn{border:none;border-radius:14px;padding:12px 24px;font-size:clamp(.9rem,2vw,1.1rem);
-  font-weight:900;font-family:inherit;cursor:pointer;transition:opacity .15s;min-width:88px}
-.nav-btn:disabled{opacity:.35;cursor:not-allowed}
-.nav-btn.o{background:#f97316;color:#fff}.nav-btn.v{background:#8b5cf6;color:#fff}
-.page-tabs{display:flex;gap:6px}
-.ptab{padding:7px 14px;border-radius:10px;border:2px solid #e2e8f0;
-  font-size:clamp(.78rem,1.8vw,.95rem);font-weight:900;font-family:inherit;cursor:pointer;
-  background:#fff;color:#64748b;transition:all .15s}
-.ptab.o.active{background:#fff7ed;color:#f97316;border-color:#fed7aa}
-.ptab.v.active{background:#f5f3ff;color:#8b5cf6;border-color:#ddd6fe}
-
-/* ── RULE PAGE ──────────────────────────── */
-.ipa-badge{display:inline-flex;align-items:center;justify-content:center;
-  border-radius:20px;padding:10px 28px;font-size:clamp(2rem,6vw,3.5rem);font-weight:900;
-  margin-bottom:16px}
-.ipa-badge.o{background:#fff7ed;color:#f97316;border:3px solid #fed7aa}
-.ipa-badge.v{background:#f5f3ff;color:#8b5cf6;border:3px solid #ddd6fe}
-.rule-text{font-size:clamp(1.2rem,3vw,1.9rem);font-weight:900;line-height:1.5;
-  color:#1e293b;margin-bottom:16px}
-.rule-hint{border-radius:14px;padding:12px 18px;font-size:clamp(.95rem,2.2vw,1.3rem);
-  font-weight:700;margin-bottom:20px}
-.rule-hint.o{background:#fff7ed;color:#c2410c;border-left:4px solid #f97316}
-.rule-hint.v{background:#f5f3ff;color:#5b21b6;border-left:4px solid #8b5cf6}
-.speak-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
-.spk-btn{display:flex;align-items:center;gap:8px;border:none;border-radius:12px;
-  padding:11px 20px;font-size:clamp(.9rem,2vw,1.1rem);font-weight:900;font-family:inherit;
-  cursor:pointer;transition:opacity .15s}
-.spk-btn.o{background:#fff7ed;color:#f97316;border:2px solid #fed7aa}
-.spk-btn.v{background:#f5f3ff;color:#8b5cf6;border:2px solid #ddd6fe}
-.spk-btn:hover{opacity:.8}
-.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-.detail-card{border-radius:14px;padding:14px 16px}
-.detail-card.o{background:#fff7ed;border:2px solid #fed7aa}
-.detail-card.v{background:#f5f3ff;border:2px solid #ddd6fe}
-.detail-label{font-size:.8rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
-.detail-label.o{color:#f97316}.detail-label.v{color:#8b5cf6}
-.detail-val{font-size:clamp(.9rem,2vw,1.1rem);font-weight:700;color:#1e293b}
-
-/* ── WORD CARDS ─────────────────────────── */
-.word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
-.word-card{border-radius:18px;padding:20px 14px;display:flex;flex-direction:column;
-  align-items:center;gap:8px;cursor:pointer;border:3px solid transparent;
-  background:#f8fafc;transition:transform .15s,box-shadow .15s,border-color .15s}
-.word-card.o:hover{border-color:#fed7aa;box-shadow:0 6px 20px rgba(249,115,22,.15)}
-.word-card.v:hover{border-color:#ddd6fe;box-shadow:0 6px 20px rgba(139,92,246,.15)}
-.wc-emoji{font-size:clamp(2.4rem,6vw,3.5rem)}
-.wc-word{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;color:#1e293b}
-.wc-ipa{font-size:clamp(.85rem,2vw,1.1rem);font-weight:700}
-.wc-ipa.o{color:#f97316}.wc-ipa.v{color:#8b5cf6}
-.wc-zh{font-size:clamp(.85rem,2vw,1rem);font-weight:700;color:#64748b}
-.wc-icon{font-size:1.3rem;opacity:.7}
-
-/* ── SENTENCES ──────────────────────────── */
-.sent-list{display:flex;flex-direction:column;gap:20px}
-.sent-card{border-radius:18px;padding:18px 20px}
-.sent-card.o{background:#fff7ed;border:2px solid #fed7aa}
-.sent-card.v{background:#f5f3ff;border:2px solid #ddd6fe}
-.sent-tag{font-size:.75rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em;
-  margin-bottom:8px}
-.sent-tag.o{color:#f97316}.sent-tag.v{color:#8b5cf6}
-.sent-text{font-size:clamp(1.2rem,3vw,1.9rem);font-weight:900;color:#1e293b;
-  line-height:1.5;margin-bottom:10px}
-.sent-zh{font-size:clamp(.9rem,2vw,1.2rem);font-weight:700;color:#475569;margin-bottom:14px}
-.sent-btns{display:flex;gap:8px;flex-wrap:wrap}
-.sent-spk{display:flex;align-items:center;gap:7px;border:none;border-radius:10px;
-  padding:9px 18px;font-size:clamp(.85rem,1.9vw,1.05rem);font-weight:900;font-family:inherit;
-  cursor:pointer;transition:opacity .15s}
-.sent-spk.o{background:#fff;color:#f97316;border:2px solid #fed7aa}
-.sent-spk.v{background:#fff;color:#8b5cf6;border:2px solid #ddd6fe}
-.sent-spk:hover{opacity:.78}
-
-/* ── HIGHLIGHT CLASSES ──────────────────── */
-.hi-o{color:#ea580c;font-weight:900;text-decoration:underline;text-decoration-color:#fdba74;text-underline-offset:4px}
-.hi-v{color:#7c3aed;font-weight:900;text-decoration:underline;text-decoration-color:#c4b5fd;text-underline-offset:4px}
-
-/* ── PULSE ANIMATIONS ───────────────────── */
-@keyframes pulseO{0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,.5)}50%{box-shadow:0 0 0 12px rgba(249,115,22,0)}}
-@keyframes pulseV{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,.5)}50%{box-shadow:0 0 0 12px rgba(139,92,246,0)}}
-.pulse-o{animation:pulseO .85s ease-in-out infinite}
-.pulse-v{animation:pulseV .85s ease-in-out infinite}
-
-/* ── MISC ───────────────────────────────── */
-.section-title{font-size:clamp(1rem,2.4vw,1.4rem);font-weight:900;color:#94a3b8;
-  text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魔法拼音島 - 雲端互動課程</title>
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; }
+        .btn-shadow { box-shadow: 0 8px 0 rgba(0,0,0,0.1); transition: all 0.1s; }
+        .btn-shadow:active { transform: translateY(4px); box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
+    </style>
 </head>
-<body>
+<body class="bg-orange-50">
+    <div id="root"></div>
 
-<!-- ══════════════════ HOME ══════════════════ -->
-<div id="home">
-  <h1 class="home-title">🔤 Phonics Practice</h1>
-  <p class="home-sub">選擇一個主題開始學習 — 點擊卡片進入課程</p>
-  <div class="card-grid" id="cardGrid"></div>
-</div>
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        window.FB = { initializeApp, getAuth, signInAnonymously, onAuthStateChanged, getFirestore, doc, getDoc, setDoc };
+    </script>
 
-<!-- ══════════════════ LESSON ══════════════════ -->
-<div id="lesson">
-  <div class="topbar">
-    <button class="back-btn" id="backBtn">← 返回首頁</button>
-    <div class="progress-dots" id="progressDots"></div>
-    <span class="step-label" id="stepLabel"></span>
-  </div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-  <div class="lesson-header" id="lessonHeader">
-    <div class="header-emoji" id="headerEmoji"></div>
-    <div class="header-title" id="headerTitle"></div>
-    <div class="header-ipa" id="headerIpa"></div>
-  </div>
+        // --- 1. 圖示庫 (Icons) ---
+        const Icons = {
+            Home: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+            Volume2: ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>,
+            BookOpen: () => <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
+            Star: () => <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+            Play: () => <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>,
+            ArrowRight: () => <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>,
+            CloudDownload: ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.89 4.08 15a.5.5 0 0 0 .1.34C4.67 16.2 5.76 17 7 17h10c1.24 0 2.33-.8 2.82-1.66a.5.5 0 0 0 .1-.34l.08-.11A5 5 0 0 0 15 5c-.32 0-.64.03-.95.09a7 7 0 1 0-10.05 9.8"/></svg>,
+            Check: ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>,
+            Alert: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        };
 
-  <div class="content-wrap">
-    <div class="content-card" id="contentCard"></div>
-  </div>
+        // --- 2. 靜態教學資料 ---
+        const WORDS_DATA = [
+            { t: 'Cat', e: '🐱', type: 'short' }, { t: 'Hat', e: '👒', type: 'short' },
+            { t: 'Jam', e: '🍓', type: 'short' }, { t: 'Map', e: '🗺️', type: 'short' },
+            { t: 'Cake', e: '🍰', type: 'long' }, { t: 'Lake', e: '🏞️', type: 'long' },
+            { t: 'Name', e: '🏷️', type: 'long' }, { t: 'Game', e: '🎮', type: 'long' }
+        ];
 
-  <div class="botbar">
-    <button class="nav-btn" id="prevBtn">← 上一頁</button>
-    <div class="page-tabs" id="pageTabs"></div>
-    <button class="nav-btn" id="nextBtn">下一頁 →</button>
-  </div>
-</div>
+        const SENTENCES_DATA = [
+            { p: "Cap vs. Cape", s: "Put on your cap and wear your cape.", z: "戴上帽子，穿上斗篷。", i: "🦸‍♂️" },
+            { p: "Mat vs. Mate", s: "My mate is sitting on a mat.", z: "我的夥伴坐在墊子上。", i: "🤝" },
+            { p: "Tap vs. Tape", s: "Tap the box to get the tape.", z: "敲敲盒子拿膠帶。", i: "📦" }
+        ];
 
-<script>
-// ── DATA ────────────────────────────────────────────────────────────────────
-var DATA = {
-  short_e: {
-    id: 'short_e',
-    emoji: '🛏️',
-    title: 'Short E',
-    ipa: '/ɛ/',
-    accent: '#f97316',
-    theme: 'o',
-    pulse: 'pulse-o',
-    hi: 'hi-o',
-    lbg: '#fff7ed',
-    rule: '短母音 e 發「ㄝ」的短促音！嘴巴微微張開，嘴角輕輕往兩側拉，舌頭放在口腔中間，快速說「ㄝ」就對了。',
-    ruleHint: '💡 看到子音＋e＋子音（CVC）的結構，通常就是短母音 /ɛ/。',
-    ruleSpeak: 'Short e says eh! Like in bed, red, and pen. Open your mouth slightly and say eh quickly.',
-    details: [
-      { label: '嘴型', val: '微微張開，嘴角輕往兩側拉' },
-      { label: '舌頭', val: '放在口腔中間，不高不低' },
-      { label: '時間', val: '短促有力，快速發音' },
-      { label: '常見型', val: 'CVC 結構，如 bed、red、pen' }
-    ],
-    words: [
-      { w: 'bed', p: '/bɛd/', zh: '床',   e: '🛏️' },
-      { w: 'red', p: '/rɛd/', zh: '紅色', e: '🔴' },
-      { w: 'pen', p: '/pɛn/', zh: '筆',   e: '✏️' },
-      { w: 'web', p: '/wɛb/', zh: '網',   e: '🕸️' },
-      { w: 'leg', p: '/lɛɡ/', zh: '腿',   e: '🦵' },
-      { w: 'hen', p: '/hɛn/', zh: '母雞', e: '🐔' }
-    ],
-    sents: [
-      { id: 'se1', pair: 'bed vs bead', sent: 'The red hen sat on the bed.', zh: '那隻紅色的母雞坐在床上。', targets: ['red','hen','bed'] },
-      { id: 'se2', pair: 'pet vs Pete', sent: 'Ben has a wet pet on his leg.', zh: '班的腿上有一隻濕濕的寵物。', targets: ['Ben','wet','pet','leg'] },
-      { id: 'se3', pair: 'pen vs peen', sent: 'She left the red pen on the desk.', zh: '她把那支紅筆放在桌上。', targets: ['red','pen','desk'] }
-    ]
-  },
+        // --- 3. 輔助函式 ---
+        const getSafeId = (text) => btoa(unescape(encodeURIComponent(text))).replace(/[/+=]/g, '_');
 
-  long_e: {
-    id: 'long_e',
-    emoji: '🎬',
-    title: 'Long E (e_e)',
-    ipa: '/iː/',
-    accent: '#8b5cf6',
-    theme: 'v',
-    pulse: 'pulse-v',
-    hi: 'hi-v',
-    lbg: '#f5f3ff',
-    rule: '長母音 e 發字母本身的音「ㄧ」！當單字出現「e＿e」的魔法結構時，前面的 e 要大聲說出自己的名字 /iː/，結尾的 e 保持安靜不發音。',
-    ruleHint: '💡 e＿e 結構：e + 子音 + 魔法 e，前面的 e 發長音，最後的 e 不發音。',
-    ruleSpeak: 'Long e says ee! The magic e at the end makes the first e say its name. Like in theme, these, and scene.',
-    details: [
-      { label: '嘴型', val: '嘴角往兩側拉開，像在微笑' },
-      { label: '舌頭', val: '舌頭往前且往上，接近上顎' },
-      { label: '時間', val: '比短母音拉長，可持續發音' },
-      { label: '常見型', val: 'e＿e 魔法結構，如 theme、scene' }
-    ],
-    words: [
-      { w: 'Pete',  p: '/piːt/',  zh: '皮特（人名）', e: '🧑' },
-      { w: 'theme', p: '/θiːm/',  zh: '主題',         e: '🎨' },
-      { w: 'these', p: '/ðiːz/',  zh: '這些',         e: '👆' },
-      { w: 'eve',   p: '/iːv/',   zh: '前夕',         e: '🌙' },
-      { w: 'gene',  p: '/dʒiːn/', zh: '基因',         e: '🧬' },
-      { w: 'scene', p: '/siːn/',  zh: '場景',         e: '🎬' }
-    ],
-    sents: [
-      { id: 'le1', pair: 'pet vs Pete', sent: 'Pete chose the theme for the show.', zh: '皮特為表演選了這個主題。', targets: ['Pete','theme'] },
-      { id: 'le2', pair: 'set vs scene', sent: 'These are the best scenes to see.', zh: '這些是最值得觀看的場景。', targets: ['These','scenes','see'] },
-      { id: 'le3', pair: 'gen vs gene', sent: 'Gene and Eve felt complete after the trip.', zh: '旅行結束後，吉恩和伊芙感到心滿意足。', targets: ['Gene','Eve','complete'] }
-    ]
-  }
-};
+        const pcmToWav = (pcmBase64, sampleRate = 24000) => {
+            const byteCharacters = atob(pcmBase64);
+            const buffer = new ArrayBuffer(byteCharacters.length);
+            const view = new Uint8Array(buffer);
+            for (let i = 0; i < byteCharacters.length; i++) view[i] = byteCharacters.charCodeAt(i);
+            const wavHeader = new ArrayBuffer(44);
+            const headerView = new DataView(wavHeader);
+            const writeString = (offset, string) => {
+                for (let i = 0; i < string.length; i++) headerView.setUint8(offset + i, string.charCodeAt(i));
+            };
+            writeString(0, 'RIFF'); headerView.setUint32(4, 32 + buffer.byteLength, true);
+            writeString(8, 'WAVE'); writeString(12, 'fmt ');
+            headerView.setUint32(16, 16, true); headerView.setUint16(20, 1, true);
+            headerView.setUint16(22, 1, true); headerView.setUint32(24, sampleRate, true);
+            headerView.setUint32(28, sampleRate * 2, true); headerView.setUint16(32, 2, true);
+            headerView.setUint16(34, 16, true); writeString(36, 'data');
+            headerView.setUint32(40, buffer.byteLength, true);
+            return new Blob([wavHeader, buffer], { type: 'audio/wav' });
+        };
 
-var ORDER = ['short_e','long_e'];
+        // --- 4. 主程式 App ---
+        const App = () => {
+            const [currentPage, setCurrentPage] = useState('home');
+            const [isSpeaking, setIsSpeaking] = useState(false);
+            const [user, setUser] = useState(null);
+            const [audioStatus, setAudioStatus] = useState({});
+            const [db, setDb] = useState(null);
+            const [errorMsg, setErrorMsg] = useState("");
 
-// ── STATE ────────────────────────────────────────────────────────────────────
-var currentId = null;
-var currentStep = 0;
-var speakingId = null;
-var voiceList = [];
-var synth = window.speechSynthesis;
+            // API 與 Firebase 設定
+            const apiKey = ""; // 設為空字串，系統將自動注入 API 金鑰
+            const appId = 'phonics-course-a-web';
+            
+            const firebaseConfig = {
+                apiKey: "AIzaSyBnjfbh1ow4j6gXBP9XeBQkCt_cs7Uv3ds",
+                authDomain: "education-b38d5.firebaseapp.com",
+                projectId: "education-b38d5",
+                storageBucket: "education-b38d5.firebasestorage.app",
+                messagingSenderId: "450320441540",
+                appId: "1:450320441540:web:888014b1380a473a142991"
+            };
 
-// ── UTILS ────────────────────────────────────────────────────────────────────
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+            // 初始化 Firebase
+            useEffect(() => {
+                const timer = setTimeout(() => {
+                    if (window.FB) {
+                        try {
+                            const app = window.FB.initializeApp(firebaseConfig);
+                            const auth = window.FB.getAuth(app);
+                            const firestore = window.FB.getFirestore(app);
+                            setDb(firestore);
 
-function svgV(speaking){
-  if(speaking) return '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="6" width="4" height="12" rx="2"/><rect x="10" y="3" width="4" height="18" rx="2"/><rect x="17" y="7" width="4" height="10" rx="2"/></svg>';
-  return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
-}
+                            window.FB.onAuthStateChanged(auth, (u) => {
+                                if (u) setUser(u);
+                                else window.FB.signInAnonymously(auth).catch(e => setErrorMsg("連線錯誤: " + e.message));
+                            });
+                        } catch (e) { setErrorMsg("Firebase 初始化失敗: " + e.message); }
+                    }
+                }, 500);
+                return () => clearTimeout(timer);
+            }, []);
 
-// ── TTS ──────────────────────────────────────────────────────────────────────
-function pickVoice(lang){
-  var list = synth.getVoices();
-  if(list.length === 0) list = voiceList;
-  var preferred = ['Google','Microsoft','Premium','Natural','Samantha'];
-  for(var p=0;p<preferred.length;p++){
-    for(var i=0;i<list.length;i++){
-      if(list[i].lang===lang && list[i].name.indexOf(preferred[p])>=0) return list[i];
-    }
-  }
-  for(var i=0;i<list.length;i++){ if(list[i].lang===lang) return list[i]; }
-  var pre=lang.slice(0,2);
-  for(var i=0;i<list.length;i++){ if(list[i].lang.slice(0,2)===pre) return list[i]; }
-  return null;
-}
+            // 語音播放與快取邏輯
+            const speak = async (text) => {
+                if (isSpeaking) return;
+                const safeId = getSafeId(text);
+                let audioData = null;
 
-function updateSpeakUI(id){
-  speakingId = id;
-  document.querySelectorAll('[data-spk]').forEach(function(el){
-    var spk = el.getAttribute('data-spk');
-    var isActive = (spk === id);
-    var d = currentId ? DATA[currentId] : null;
-    if(d){
-      if(isActive){ el.classList.add(d.pulse); }
-      else { el.classList.remove(d.pulse); }
-    }
-    if(el.tagName === 'BUTTON'){
-      // 按鈕：整個 innerHTML 更新（文字 + icon）
-      el.innerHTML = svgV(isActive) + ' ' + el.getAttribute('data-label');
-    } else {
-      // 單字卡 div：只更新卡片內的 .wc-icon，不動其他內容
-      var iconDiv = el.querySelector('.wc-icon');
-      if(iconDiv) iconDiv.innerHTML = svgV(isActive);
-    }
-  });
-}
+                setAudioStatus(prev => ({ ...prev, [text]: 'loading' }));
+                setIsSpeaking(true);
 
-function doSpeak(text, id, lang){
-  if(!lang) lang = 'en-US';
-  if(speakingId === id){ synth.cancel(); updateSpeakUI(null); return; }
-  synth.cancel();
-  updateSpeakUI(id);
-  function _speak(){
-    var u = new SpeechSynthesisUtterance(text);
-    u.lang = lang;
-    u.rate = (lang==='zh-TW') ? 0.85 : 0.82;
-    u.pitch = 1.0;
-    var voice = pickVoice(lang);
-    if(voice){ u.voice = voice; u.lang = voice.lang; }
-    u.onend   = function(){ updateSpeakUI(null); };
-    u.onerror = function(){ updateSpeakUI(null); };
-    synth.speak(u);
-  }
-  var list = synth.getVoices();
-  if(list.length > 0){ _speak(); }
-  else {
-    synth.onvoiceschanged = function(){
-      synth.onvoiceschanged = null;
-      voiceList = synth.getVoices();
-      _speak();
-    };
-    setTimeout(function(){
-      if(speakingId===id){ voiceList=synth.getVoices(); _speak(); }
-    }, 500);
-  }
-}
+                try {
+                    // 1. 優先從雲端資料庫抓取已生成的語音
+                    if (db && user) {
+                        const audioPath = window.FB.doc(db, 'artifacts', appId, 'public', 'data', 'audio_cache', safeId);
+                        const cacheSnap = await window.FB.getDoc(audioPath);
+                        if (cacheSnap.exists()) audioData = cacheSnap.data().base64;
+                    }
 
-function attachListeners(){
-  document.querySelectorAll('[data-spk]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      doSpeak(btn.getAttribute('data-txt'), btn.getAttribute('data-spk'), btn.getAttribute('data-lang'));
-    });
-  });
-}
+                    // 2. 沒快取則調用 Gemini TTS API 生成
+                    if (!audioData) {
+                        // 【修復】使用正確的 TTS 語音模型：gemini-2.5-flash-preview-tts
+                        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                contents: [{ parts: [{ text: text }] }],
+                                generationConfig: {
+                                    responseModalities: ["AUDIO"],
+                                    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } } }
+                                }
+                            })
+                        });
+                        
+                        if (!response.ok) throw new Error(`語音生成失敗 (${response.status})`);
+                        
+                        const result = await response.json();
+                        audioData = result.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+                        
+                        if (!audioData) throw new Error("API 未回傳音訊資料");
 
-// ── HIGHLIGHT ────────────────────────────────────────────────────────────────
-function highlightSent(sent, targets, hiClass){
-  var words = sent.split(/(\s+)/);
-  return words.map(function(tok){
-    var clean = tok.replace(/[^a-zA-Z]/g,'').toLowerCase();
-    var isTarget = targets.map(function(t){ return t.toLowerCase(); }).indexOf(clean) >= 0;
-    if(isTarget) return '<span class="' + hiClass + '">' + esc(tok) + '</span>';
-    return esc(tok);
-  }).join('');
-}
+                        // 3. 生成成功後，存回 Firebase 永久保存
+                        if (audioData && db && user) {
+                            const audioPath = window.FB.doc(db, 'artifacts', appId, 'public', 'data', 'audio_cache', safeId);
+                            setAudioStatus(prev => ({ ...prev, [text]: 'caching' }));
+                            await window.FB.setDoc(audioPath, { base64: audioData, text: text, createdAt: new Date().toISOString() });
+                        }
+                    }
 
-// ── BUILDERS ─────────────────────────────────────────────────────────────────
-function buildRule(d){
-  var html = '';
-  html += '<div style="text-align:center;margin-bottom:20px">';
-  html += '<span class="ipa-badge ' + d.theme + '">' + esc(d.ipa) + '</span>';
-  html += '</div>';
-  html += '<p class="rule-text">' + esc(d.rule) + '</p>';
-  html += '<div class="rule-hint ' + d.theme + '">' + esc(d.ruleHint) + '</div>';
-  html += '<div class="speak-row">';
-  html += '<button class="spk-btn ' + d.theme + '" data-spk="rule-zh" data-txt="' + esc(d.rule) + '" data-lang="zh-TW" data-label="🇹🇼 聽中文說明">' + svgV(false) + ' 🇹🇼 聽中文說明</button>';
-  html += '<button class="spk-btn ' + d.theme + '" data-spk="rule-en" data-txt="' + esc(d.ruleSpeak) + '" data-lang="en-US" data-label="🇺🇸 聽英文示範">' + svgV(false) + ' 🇺🇸 聽英文示範</button>';
-  html += '</div>';
-  html += '<div class="detail-grid">';
-  d.details.forEach(function(item){
-    html += '<div class="detail-card ' + d.theme + '">';
-    html += '<div class="detail-label ' + d.theme + '">' + esc(item.label) + '</div>';
-    html += '<div class="detail-val">' + esc(item.val) + '</div>';
-    html += '</div>';
-  });
-  html += '</div>';
-  return html;
-}
+                    // 4. 將 PCM 轉為 WAV 並播放
+                    if (audioData) {
+                        const audioBlob = pcmToWav(audioData);
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        const audio = new Audio(audioUrl);
+                        setAudioStatus(prev => ({ ...prev, [text]: 'playing' }));
+                        
+                        audio.onended = () => {
+                            setIsSpeaking(false);
+                            setAudioStatus(prev => ({ ...prev, [text]: 'idle' }));
+                            URL.revokeObjectURL(audioUrl);
+                        };
+                        audio.onerror = () => { throw new Error("音訊播放發生錯誤"); };
+                        audio.play();
+                    }
+                } catch (error) {
+                    setErrorMsg(error.message);
+                    setIsSpeaking(false);
+                    setAudioStatus(prev => ({ ...prev, [text]: 'idle' }));
+                }
+            };
 
-function buildWords(d){
-  var html = '<p class="section-title">精選單字 — 點擊卡片朗讀</p>';
-  html += '<div class="word-grid">';
-  d.words.forEach(function(w){
-    var spkId = 'word-' + w.w;
-    html += '<div class="word-card ' + d.theme + '" data-spk="' + esc(spkId) + '" data-txt="' + esc(w.w) + '" data-lang="en-US" data-label="' + esc(w.w) + '">';
-    html += '<div class="wc-emoji">' + w.e + '</div>';
-    html += '<div class="wc-word">' + esc(w.w) + '</div>';
-    html += '<div class="wc-ipa ' + d.theme + '">' + esc(w.p) + '</div>';
-    html += '<div class="wc-zh">' + esc(w.zh) + '</div>';
-    html += '<div class="wc-icon">' + svgV(false) + '</div>';
-    html += '</div>';
-  });
-  html += '</div>';
-  return html;
-}
+            // 狀態圖示小元件
+            const StatusIcon = ({ text }) => {
+                const status = audioStatus[text];
+                if (status === 'loading') return <Icons.CloudDownload className="animate-bounce text-blue-400" />;
+                if (status === 'caching') return <Icons.Check className="animate-pulse text-green-500" />;
+                if (status === 'playing') return <Icons.Volume2 className="animate-ping text-orange-500" />;
+                return <Icons.Volume2 className="text-gray-400" />;
+            };
 
-function buildSents(d){
-  var html = '<p class="section-title">例句練習 — 聆聽並認出高亮單字</p>';
-  html += '<div class="sent-list">';
-  d.sents.forEach(function(s){
-    html += '<div class="sent-card ' + d.theme + '">';
-    html += '<div class="sent-tag ' + d.theme + '">🔀 ' + esc(s.pair) + '</div>';
-    html += '<div class="sent-text">' + highlightSent(s.sent, s.targets, d.hi) + '</div>';
-    html += '<div class="sent-zh">' + esc(s.zh) + '</div>';
-    html += '<div class="sent-btns">';
-    html += '<button class="sent-spk ' + d.theme + '" data-spk="' + esc(s.id) + '-en" data-txt="' + esc(s.sent) + '" data-lang="en-US" data-label="🇺🇸 英文">' + svgV(false) + ' 🇺🇸 英文</button>';
-    html += '<button class="sent-spk ' + d.theme + '" data-spk="' + esc(s.id) + '-zh" data-txt="' + esc(s.zh) + '" data-lang="zh-TW" data-label="🇹🇼 中文">' + svgV(false) + ' 🇹🇼 中文</button>';
-    html += '</div>';
-    html += '</div>';
-  });
-  html += '</div>';
-  return html;
-}
+            // 共用外框組件
+            const PageContainer = ({ children, title }) => (
+                <div className="min-h-screen bg-orange-50 p-4 md:p-10 flex flex-col items-center">
+                    {errorMsg && (
+                        <div className="w-full max-w-5xl mb-4 bg-red-50 border-2 border-red-200 text-red-700 p-4 rounded-3xl flex items-center gap-3 shadow-md">
+                            <Icons.Alert />
+                            <div className="flex-1 text-sm"><p className="font-bold">狀態提示</p><p>{errorMsg}</p></div>
+                            <button onClick={() => setErrorMsg("")} className="text-xs bg-white px-2 py-1 rounded-lg">關閉</button>
+                        </div>
+                    )}
+                    <div className="w-full max-w-5xl bg-white rounded-[3rem] shadow-2xl border-8 border-yellow-200 overflow-hidden relative">
+                        <div className="bg-yellow-100 p-6 flex justify-between items-center border-b-4 border-yellow-200">
+                            <button onClick={() => setCurrentPage('home')} className="flex items-center gap-2 bg-white px-5 py-2 rounded-full font-bold text-orange-600 hover:bg-orange-50 shadow-sm transition-all"><Icons.Home /> 首頁</button>
+                            <h1 className="text-2xl md:text-3xl font-black text-orange-600 truncate px-4">{title}</h1>
+                            <div className={`text-xs font-bold px-3 py-1 rounded-full ${user ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600 animate-pulse'}`}>
+                                {user ? "● 雲端連線成功" : "○ 雲端連線中..."}
+                            </div>
+                        </div>
+                        <div className="p-8 md:p-12 overflow-y-auto max-h-[70vh]">
+                            {children}
+                        </div>
+                    </div>
+                </div>
+            );
 
-// ── RENDER ───────────────────────────────────────────────────────────────────
-var STEP_NAMES = ['發音規則','精選單字','例句練習'];
+            // --- 頁面渲染區塊 (結構優化) ---
+            const renderHome = () => (
+                <div className="min-h-screen bg-orange-50 flex flex-col items-center justify-center p-4">
+                    <div className="max-w-4xl w-full bg-white rounded-[4rem] shadow-2xl border-8 border-yellow-300 p-12 text-center relative overflow-hidden">
+                        <h1 className="text-6xl md:text-8xl font-black text-orange-500 mb-4 tracking-tighter">魔法拼音島</h1>
+                        <p className="text-2xl md:text-3xl text-gray-600 mb-10 font-bold italic">自動雲端快取版</p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+                            <button onClick={() => setCurrentPage('rules')} className="bg-pink-400 hover:scale-105 transform transition-all text-white p-10 rounded-[2.5rem] shadow-xl flex flex-col items-center gap-6 border-b-8 border-black border-opacity-10 btn-shadow">
+                                <Icons.BookOpen /> <span className="text-2xl font-black">1. 規則說明</span>
+                            </button>
+                            <button onClick={() => setCurrentPage('words')} className="bg-yellow-400 hover:scale-105 transform transition-all text-white p-10 rounded-[2.5rem] shadow-xl flex flex-col items-center gap-6 border-b-8 border-black border-opacity-10 btn-shadow">
+                                <Icons.Star /> <span className="text-2xl font-black">2. 常見例字</span>
+                            </button>
+                            <button onClick={() => setCurrentPage('sentences')} className="bg-green-400 hover:scale-105 transform transition-all text-white p-10 rounded-[2.5rem] shadow-xl flex flex-col items-center gap-6 border-b-8 border-black border-opacity-10 btn-shadow">
+                                <Icons.Play /> <span className="text-2xl font-black">3. 例句挑戰</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
 
-function renderLesson(){
-  var d = DATA[currentId];
+            const renderRules = () => (
+                <PageContainer title="第一站：規則說明">
+                    <div className="space-y-10">
+                        <div className="bg-pink-50 p-10 rounded-[3rem] border-4 border-pink-200">
+                            <h2 className="text-4xl font-black text-pink-600 mb-8 flex items-center gap-4 underline underline-offset-8">短母音 Short 'a' (/æ/)</h2>
+                            <div className="flex flex-col md:flex-row items-center gap-10">
+                                <div className="text-9xl bg-white p-10 rounded-3xl shadow-inner border border-pink-100 animate-pulse">🍎</div>
+                                <div className="text-3xl leading-relaxed flex-1 font-bold text-pink-800">
+                                    嘴巴張大發出短音 /æ/。<br/>
+                                    <button onClick={() => speak("Short a, says ah, like in apple.")} className="mt-8 flex items-center gap-4 bg-pink-500 text-white px-10 py-4 rounded-full hover:bg-pink-600 shadow-xl font-black text-2xl transition-all active:scale-95 btn-shadow">
+                                        <StatusIcon text="Short a, says ah, like in apple." /> 播放發音
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="bg-blue-50 p-10 rounded-[3rem] border-4 border-blue-200">
+                            <h2 className="text-4xl font-black text-blue-600 mb-8 flex items-center gap-4 underline underline-offset-8">長母音 Long 'a' (/eɪ/)</h2>
+                            <div className="flex flex-col md:flex-row items-center gap-10">
+                                <div className="text-9xl bg-white p-10 rounded-3xl shadow-inner border border-blue-100 animate-pulse">🍰</div>
+                                <div className="text-3xl leading-relaxed flex-1 font-bold text-blue-800">
+                                    魔法 'e' 讓 'a' 發名字音 /eɪ/。<br/>
+                                    <button onClick={() => speak("Long a, says ay, like in cake. The magic e makes the sound.")} className="mt-8 flex items-center gap-4 bg-blue-500 text-white px-10 py-4 rounded-full hover:bg-blue-600 shadow-xl font-black text-2xl transition-all active:scale-95 btn-shadow">
+                                        <StatusIcon text="Long a, says ay, like in cake. The magic e makes the sound." /> 播放發音
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex justify-center"><button onClick={() => setCurrentPage('words')} className="bg-orange-500 text-white text-3xl font-black px-16 py-6 rounded-full shadow-2xl hover:scale-105 transition-all">下一關：練習單字 <Icons.ArrowRight /></button></div>
+                    </div>
+                </PageContainer>
+            );
 
-  // background
-  var lesson = document.getElementById('lesson');
-  lesson.className = '';
-  lesson.style.display = 'flex';
-  lesson.style.cssText = 'display:flex;min-height:100vh;flex-direction:column';
-  lesson.classList.add('lesson-bg-' + d.theme);
+            const renderWords = () => (
+                <PageContainer title="第二站：常見例字">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        {WORDS_DATA.map((w, i) => (
+                            <button key={i} onClick={() => speak(w.t)} className={`p-10 rounded-[2.5rem] border-4 ${w.type === 'short' ? 'bg-pink-50 border-pink-200 text-pink-700' : 'bg-blue-50 border-blue-200 text-blue-700'} hover:scale-105 transition-all flex flex-col items-center gap-6 shadow-xl btn-shadow group`}>
+                                <span className="text-7xl group-hover:animate-bounce transition-transform">{w.e}</span>
+                                <span className="text-4xl font-black">{w.t}</span>
+                                <div className="bg-white p-2 rounded-full shadow-inner"><StatusIcon text={w.t} /></div>
+                            </button>
+                        ))}
+                    </div>
+                    <div className="flex justify-center mt-12"><button onClick={() => setCurrentPage('sentences')} className="bg-orange-500 text-white text-3xl font-black px-16 py-6 rounded-full shadow-2xl hover:scale-105 transition-all">最後一關：例句大挑戰 <Icons.ArrowRight /></button></div>
+                </PageContainer>
+            );
 
-  // header
-  document.getElementById('headerEmoji').textContent = d.emoji;
-  document.getElementById('headerTitle').textContent = d.title;
-  var ipa = document.getElementById('headerIpa');
-  ipa.textContent = d.ipa;
-  ipa.className = 'header-ipa ' + d.theme;
+            const renderSentences = () => (
+                <PageContainer title="第三站：例句挑戰">
+                    <div className="space-y-8">
+                        {SENTENCES_DATA.map((c, i) => (
+                            <div key={i} className="bg-green-50 border-4 border-green-200 p-10 rounded-[3rem] flex flex-col md:flex-row items-center gap-10 shadow-lg">
+                                <div className="text-8xl bg-white w-32 h-32 md:w-40 md:h-40 flex items-center justify-center rounded-full shadow-inner border-4 border-green-100">{c.i}</div>
+                                <div className="flex-1 text-center md:text-left">
+                                    <span className="bg-green-500 text-white px-6 py-2 rounded-full font-black text-2xl mb-4 inline-block">{c.p}</span>
+                                    <p className="text-4xl md:text-5xl font-black text-gray-800 leading-tight">{c.s}</p>
+                                    <p className="text-2xl md:text-3xl text-gray-500 mt-4 font-bold italic">{c.z}</p>
+                                </div>
+                                <button onClick={() => speak(c.s)} className="bg-green-500 hover:bg-green-600 text-white p-10 rounded-3xl shadow-xl transition-all active:scale-95 btn-shadow">
+                                    <StatusIcon text={c.s} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mt-12 text-center"><button onClick={() => setCurrentPage('home')} className="text-orange-600 font-black text-2xl hover:underline">← 練習完成，回到首頁</button></div>
+                </PageContainer>
+            );
 
-  // progress dots
-  var dots = document.getElementById('progressDots');
-  dots.innerHTML = '';
-  for(var i=0;i<3;i++){
-    var dot = document.createElement('div');
-    dot.className = 'dot ' + d.theme + (i===currentStep ? ' active' : '');
-    dots.appendChild(dot);
-  }
+            switch (currentPage) {
+                case 'home': return renderHome();
+                case 'rules': return renderRules();
+                case 'words': return renderWords();
+                case 'sentences': return renderSentences();
+                default: return renderHome();
+            }
+        };
 
-  // step label
-  document.getElementById('stepLabel').textContent = STEP_NAMES[currentStep];
-
-  // page tabs
-  var tabs = document.getElementById('pageTabs');
-  tabs.innerHTML = '';
-  STEP_NAMES.forEach(function(name, i){
-    var btn = document.createElement('button');
-    btn.className = 'ptab ' + d.theme + (i===currentStep ? ' active' : '');
-    btn.textContent = name;
-    btn.setAttribute('data-step', i);
-    tabs.appendChild(btn);
-    btn.addEventListener('click', function(){
-      synth.cancel(); updateSpeakUI(null);
-      currentStep = parseInt(btn.getAttribute('data-step'));
-      renderLesson();
-    });
-  });
-
-  // nav buttons
-  var prevBtn = document.getElementById('prevBtn');
-  var nextBtn = document.getElementById('nextBtn');
-  prevBtn.className = 'nav-btn ' + d.theme;
-  nextBtn.className = 'nav-btn ' + d.theme;
-  prevBtn.disabled = (currentStep === 0);
-  nextBtn.disabled = (currentStep === 2);
-  nextBtn.textContent = '下一頁 →';
-
-  // content
-  var card = document.getElementById('contentCard');
-  if(currentStep === 0) card.innerHTML = buildRule(d);
-  else if(currentStep === 1) card.innerHTML = buildWords(d);
-  else card.innerHTML = buildSents(d);
-
-  attachListeners();
-}
-
-// ── NAVIGATION ───────────────────────────────────────────────────────────────
-function startLesson(id){
-  currentId = id;
-  currentStep = 0;
-  document.getElementById('home').style.display = 'none';
-  synth.cancel(); updateSpeakUI(null);
-  renderLesson();
-}
-
-function goHome(){
-  synth.cancel(); updateSpeakUI(null);
-  document.getElementById('lesson').style.display = 'none';
-  document.getElementById('home').style.display = 'block';
-  currentId = null;
-}
-
-document.getElementById('backBtn').addEventListener('click', goHome);
-
-document.getElementById('prevBtn').addEventListener('click', function(){
-  if(currentStep > 0){
-    synth.cancel(); updateSpeakUI(null);
-    currentStep--;
-    renderLesson();
-  }
-});
-
-document.getElementById('nextBtn').addEventListener('click', function(){
-  if(currentStep < 2){
-    synth.cancel(); updateSpeakUI(null);
-    currentStep++;
-    renderLesson();
-  }
-});
-
-// ── BUILD HOME ───────────────────────────────────────────────────────────────
-function buildHome(){
-  var grid = document.getElementById('cardGrid');
-  grid.innerHTML = '';
-  ORDER.forEach(function(id){
-    var d = DATA[id];
-    var card = document.createElement('div');
-    card.className = 'topic-card ' + d.theme;
-    card.innerHTML = [
-      '<div class="card-emoji">' + d.emoji + '</div>',
-      '<div class="card-title">' + esc(d.title) + '</div>',
-      '<div class="card-ipa ' + d.theme + '">' + esc(d.ipa) + '</div>',
-      '<div class="card-hint">' + esc(d.words.slice(0,4).map(function(w){return w.w}).join(' · ')) + ' …</div>',
-      '<button class="start-btn ' + d.theme + '">開始學習 →</button>'
-    ].join('');
-    card.querySelector('.start-btn').addEventListener('click', function(e){
-      e.stopPropagation();
-      startLesson(id);
-    });
-    card.addEventListener('click', function(){ startLesson(id); });
-    grid.appendChild(card);
-  });
-}
-
-// ── INIT ─────────────────────────────────────────────────────────────────────
-buildHome();
-if(synth.onvoiceschanged !== undefined){
-  synth.onvoiceschanged = function(){
-    voiceList = synth.getVoices();
-  };
-}
-</script>
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
